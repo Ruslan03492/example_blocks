@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function example_blocks_blocks_theme() {
+  return array(
+    'example_blocks_blocks_menu_catalog' => array(
+      'variables' => array(
+        'links' => array(),
+      ),
+      'template' => 'theme/example-blocks-blocks-menu-catalog',
+    ),
+  );
+}
+
+/**
+* Implements hook_block_info().
+*/
+function example_blocks_blocks_block_info() {
+  $blocks = array();
+  $blocks['social_links_footer'] = array(
+    'info' => t('Social Links to Share'),
+  );
+  return $blocks;
+}
+
+/**
+* Implements hook_block_view().
+*/
+function example_blocks_blocks_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'social_links_footer':
+      $block['subject'] = '';
+      $block['content'] = _example_blocks_blocks_social_links_footer();
+      break;
+  }
+  return $block;
+}
+
+
+/**
+ * Block for footer menu.
+ */
+function _example_blocks_blocks_social_links_footer() {
+    $output = '';
+    $menu_exists = (menu_load('menu-example_blocks-social-footer') !== FALSE);
+    if ($menu_exists && count($menu_tree = menu_tree_all_data('menu-example_blocks-social-footer', NULL, 4)) && module_exists('menu_attributes')) {
+        $menu_tree = menu_tree_all_data('menu-example_blocks-social-footer');
+        $output .= '<ul class="social-icons">';
+        foreach ($menu_tree as $link) {
+          if (isset($link['link']['options']['attributes'])) {
+            $output .= '<li>'.l('<i '. drupal_attributes($link['link']['options']['attributes']) .'></i>', $link['link']['href'], array( 'html'=>TRUE ) ).'</li>';
+          }
+        }
+        $output .= '</ul>';
+    }
+    return $output;
+}

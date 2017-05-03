@@ -1,0 +1,4 @@
+name 		= Example blocks
+description = "Example all blocks"
+package     = My
+core 		= 7.x
